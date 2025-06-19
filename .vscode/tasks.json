@@ -4,7 +4,7 @@
         {
             "label": "build-and-test",
             "type": "shell",
-            "command": "cd ${workspaceFolder}/rbtree_lab && make -C test test-rbtree",
+            "command": "cd ${workspaceFolder}/rbtree-lab && make -C test test-rbtree",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -17,20 +17,20 @@
                 "$gcc"
             ],
             "options": {
-                "cwd": "${workspaceFolder}/rbtree_lab"
+                "cwd": "${workspaceFolder}/rbtree-lab"
             }
         },
         {
             "label": "clean",
             "type": "shell",
-            "command": "cd ${workspaceFolder}/rbtree_lab && make clean",
+            "command": "cd ${workspaceFolder}/rbtree-lab && make clean",
             "presentation": {
                 "reveal": "always",
                 "panel": "new"
             },
             "problemMatcher": [],
             "options": {
-                "cwd": "${workspaceFolder}/rbtree_lab"
+                "cwd": "${workspaceFolder}/rbtree-lab"
             }
         }
     ]
