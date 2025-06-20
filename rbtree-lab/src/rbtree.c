@@ -69,14 +69,14 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
     return new_node;
   }
 
-  node_t *current = t;
+  node_t *current = t->root;
   node_t *parent = t->nil;
 
   // 이진 탐색 그자체 어떤 부모 밑에 추가 되어야할지 정하는거임
   while (current != t->nil) {
     parent = current;
 
-    if (current->key > key) {
+    if (key < current->key) {
       current = current->left;
     } else {
       current = current->right;
@@ -91,7 +91,23 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
 
 node_t *rbtree_find(const rbtree *t, const key_t key) {
   // TODO: implement find
-  return t->root;
+  if (t == NULL) {
+    return NULL;
+  }
+
+  node_t *current = t->root;
+
+  while(current != t->nil) {
+    if (key < current->key) {
+      current = current->left;
+    } else if (key > current->key) {
+      current = current->right;
+    } else {
+      return current;
+    }
+  }
+
+  return NULL;
 }
 
 /* level: 4 */
