@@ -55,7 +55,7 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
 
   node_t *new_node = (node_t *)calloc(1, sizeof(node_t));
 
-  if (t->root == t->nil) {
+  if (t->root == NULL) {
     new_node->key = key;
     new_node->left = t->nil;
     new_node->right = t->nil;
