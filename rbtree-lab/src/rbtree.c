@@ -11,9 +11,9 @@ rbtree *new_rbtree(void) {
   node_t *nil_node = (node_t *)calloc(1, sizeof(node_t));
 
   nil_node->color = RBTREE_BLACK; // nil 노드 색상 설정
-  nil_node->left = NULL;
-  nil_node->right = NULL;
-  nil_node->parent = NULL;
+  nil_node->left = p->nil;
+  nil_node->right = p->nil;
+  nil_node->parent = p->nil;
 
   /*
   p->nil이란?
@@ -34,7 +34,7 @@ rbtree *new_rbtree(void) {
   아직 트리에 아무 노드도 삽입되지 않은 상태이기 때문에,
   루트 노드가 존재하지 않는다는 걸 나타내기 위해 root를 NULL로 설정한다.
   */
-  p->root = NULL;
+  p->root = nil_node;
 
   return p;
 }
@@ -53,13 +53,17 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
     return NULL;
   }
 
+  // 새로 추가할 노드의 메모리 공간을 확보함
   node_t *new_node = (node_t *)calloc(1, sizeof(node_t));
 
-  if (t->root == NULL) {
-    new_node->key = key;
+  new_node->key = key;
+
+  // 루트가 없을 경우에 생성한 노드를 루트로 지정함
+  // 루트로 사용하기 위해
+  if (t->root == t->nil) {
     new_node->left = t->nil;
     new_node->right = t->nil;
-    new_node->parent = t->nil; // rbtree->nil은 sentinel 노드로, NULL을 대체해서 쓰는 값이다.
+    new_node->parent = t->nil;
     new_node->color = RBTREE_BLACK;
     t->root = new_node;
     return new_node;
