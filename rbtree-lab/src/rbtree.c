@@ -32,7 +32,7 @@ rbtree *new_rbtree(void) {
 
   /*
   아직 트리에 아무 노드도 삽입되지 않은 상태이기 때문에,
-  루트 노드가 존재하지 않는다는 걸 나타내기 위해 root를 nil_node로 설정한다.
+  루트 노드가 존재하지 않는다는 걸 나타내기 위해 root를 NULL로 설정한다.
   */
   p->root = NULL;
 
