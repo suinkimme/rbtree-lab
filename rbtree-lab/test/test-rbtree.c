@@ -25,9 +25,8 @@ void test_insert_single(const key_t key)
   node_t *p = rbtree_insert(t, key);
   assert(p != NULL);
   assert(t->root == p);
-  printf("%d %d\n", p->key, key);
   assert(p->key == key);
-  // assert(p->color == RBTREE_BLACK);  // color of root node should be black
+  assert(p->color == RBTREE_BLACK);  // color of root node should be black
 #ifdef SENTINEL
   assert(p->left == t->nil);
   assert(p->right == t->nil);

@@ -57,19 +57,36 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
   node_t *new_node = (node_t *)calloc(1, sizeof(node_t));
 
   new_node->key = key;
+  new_node->left = t->nil;
+  new_node->right = t->nil;
 
   // 루트가 없을 경우에 생성한 노드를 루트로 지정함
   // 루트로 사용하기 위해
   if (t->root == t->nil) {
-    new_node->left = t->nil;
-    new_node->right = t->nil;
     new_node->parent = t->nil;
     new_node->color = RBTREE_BLACK;
     t->root = new_node;
     return new_node;
   }
 
-  return t->root;
+  node_t *current = t;
+  node_t *parent = t->nil;
+
+  // 이진 탐색 그자체 어떤 부모 밑에 추가 되어야할지 정하는거임
+  while (current != t->nil) {
+    parent = current;
+
+    if (current->key > key) {
+      current = current->left;
+    } else {
+      current = current->right;
+    }
+  }
+
+  new_node->parent = parent;
+  new_node->color = RBTREE_RED;
+
+  return new_node;
 }
 
 node_t *rbtree_find(const rbtree *t, const key_t key) {
