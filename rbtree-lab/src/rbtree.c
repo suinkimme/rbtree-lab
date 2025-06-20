@@ -4,7 +4,37 @@
 
 rbtree *new_rbtree(void) {
   rbtree *p = (rbtree *)calloc(1, sizeof(rbtree));
-  // TODO: initialize struct if needed
+  /*
+  node_t 구조체 하나만큼의 메모리 크기를 확보하고 그 메모리의 모든 바이트를 0으로 초기화
+  */
+  node_t *nil_node = (node_t *)calloc(1, sizeof(node_t));
+
+  nil_node->color = RBTREE_BLACK; // nil 노드 색상 설정
+  nil_node->left = NULL;
+  nil_node->right = NULL;
+  nil_node->parent = NULL;
+
+  /*
+  p->nil이란?
+  - 트리 전체에서 사용할 공용 검정색 리프 노드를 설정해주는 것이다.
+  - 트리의 모든 자식/리프 노드가 p->nil을 바라보도록 만들기 위한 준비
+
+  if (node->left == p->nil) { ... }
+  while (x != p->nill) { ... }
+
+  앞으로 이런 코드가 자주 등장하게 된다. 이게 가능한 이유는 모든 노드의 자식이 NULL이 아니라
+  공통된 setinel 노드, 즉 p->nil을 가리키도록 했기 때문이다.
+
+  트리 구조를 일관되고 안전하게 유지하려면 꼭 필요함
+  */
+  p->nil = nil_node;
+
+  /*
+  아직 트리에 아무 노드도 삽입되지 않은 상태이기 때문에,
+  루트 노드가 존재하지 않는다는 걸 나타내기 위해 root를 nil_node로 설정한다.
+  */
+  p->root = nil_node;
+
   return p;
 }
 
