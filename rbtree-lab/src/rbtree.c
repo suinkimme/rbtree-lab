@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 
+/* level: 1 */
 rbtree *new_rbtree(void) {
   rbtree *p = (rbtree *)calloc(1, sizeof(rbtree));
   /*
@@ -38,6 +39,9 @@ rbtree *new_rbtree(void) {
   return p;
 }
 
+/* level: 2 */
+/* ----------------------------------------------------------------- */
+
 void delete_rbtree(rbtree *t) {
   // TODO: reclaim the tree nodes's memory
   free(t);
@@ -53,6 +57,9 @@ node_t *rbtree_find(const rbtree *t, const key_t key) {
   return t->root;
 }
 
+/* level: 4 */
+/* ----------------------------------------------------------------- */
+
 node_t *rbtree_min(const rbtree *t) {
   // TODO: implement find
   return t->root;
@@ -63,10 +70,16 @@ node_t *rbtree_max(const rbtree *t) {
   return t->root;
 }
 
+/* level: 3 */
+/* ----------------------------------------------------------------- */
+
 int rbtree_erase(rbtree *t, node_t *p) {
   // TODO: implement erase
   return 0;
 }
+
+/* level: 5 */
+/* ----------------------------------------------------------------- */
 
 int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n) {
   // TODO: implement to_array
