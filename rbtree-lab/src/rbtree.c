@@ -32,7 +32,7 @@ rbtree *new_rbtree(void) {
 
   /*
   아직 트리에 아무 노드도 삽입되지 않은 상태이기 때문에,
-  루트 노드가 존재하지 않는다는 걸 나타내기 위해 root를 NULL로 설정한다.
+  루트 노드가 존재하지 않는다는 걸 나타내기 위해 root를 nil node로 설정한다.
   */
   p->root = nil_node;
 
@@ -86,6 +86,14 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
   new_node->parent = parent;
   new_node->color = RBTREE_RED;
 
+  if (parent == t->nil) {
+    t->root = new_node;
+  } else if (key < parent->key) {
+    parent->left = new_node;
+  } else {
+    parent->right = new_node;
+  }
+
   return new_node;
 }
 
@@ -127,8 +135,46 @@ node_t *rbtree_max(const rbtree *t) {
 /* ----------------------------------------------------------------- */
 
 int rbtree_erase(rbtree *t, node_t *p) {
-  // TODO: implement erase
-  return 0;
+  if (t == NULL || p == NULL || p == t->nil) {
+    return 0;
+  }
+
+  if (p->left == t->nil && p->right == t->nil) {
+    if (p == p->parent->left) {
+      p->parent->left = t->nil;
+    } else if (p == p->parent->right) {
+      p->parent->right = t->nil;
+    } else {
+      t->root = t->nil;
+    }
+
+    free(p);
+    return 1;
+  }
+
+  if (p->left == t->nil || p->right == t->nil) {
+    node_t *child = (p->left != t->nil) ? p->left : p->right;
+    if (p == t->root) {
+      t->root = child;
+    } else if (p == p->parent->left) {
+      p->parent->left = child;
+    } else {
+      p->parent->right = child;
+    }
+
+    child->parent = p->parent;
+
+    free(p);
+    return 1;
+  }
+
+  node_t *successor = p->right;
+  while (successor->left != t->nil) {
+    successor = successor->left;
+  }
+
+  p->key = successor->key;
+  return rbtree_erase(t, successor);
 }
 
 /* level: 5 */
