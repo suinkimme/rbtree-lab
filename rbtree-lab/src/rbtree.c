@@ -47,7 +47,7 @@ void delete_rbtree(rbtree *t) {
   free(t);
 }
 
-int rotate_right(rbtree *t, node_t *p) {
+void rotate_right(rbtree *t, node_t *p) {
   node_t *l = p->left;
   p->left = l->right;
   if (l->right != t->nil) {
@@ -65,20 +65,25 @@ int rotate_right(rbtree *t, node_t *p) {
 
   l->right = p;
   p->parent = l;
-
-  return 0;
 }
 
-int rotate_left(rbtree *t, node_t *p) {
+void rotate_left(rbtree *t, node_t *p) {
   node_t *l = p->right;
   p->right = l->left;
+  // 추가된 노드의 왼쪽 자식이 회전 후에 p의 오른쪽 자식이 되는 구조 (낙동강 오리알)
   if (l->left != t->nil) {
     l->left->parent = p;
   }
+  // 추가된 노드의 부모를 원래 부모의 부모(할아버지)로 바꾼다.
+  // 중간에 올라오는 노드가 기존의 위치를 대체해야 하므로, 할아버지에서 이 노드를 가리키도록 연결함
   l->parent = p->parent;
 
+  // 루트 부모는 항상 t->nil
+  // 루트가 바뀌는 경우는 회전이 루트에서 발생했을 때 인데
+  // p가 루트였다면 아래 조건이 참이되고 그 경우 새로 추가된 노드를 루트로 지정함
   if (p->parent == t->nil) {
     t->root = l;
+  // 회전의 기준이 된 노드 p가 그 부모의 왼쪽 자식이라면, 회전 후 l을 그 부모의 왼쪽 자식으로 지정한다. 반대의 경우는 오른쪽으로 설정하면 된다.
   } else if (p == p->parent->left) {
     p->parent->left = l;
   } else {
@@ -87,11 +92,9 @@ int rotate_left(rbtree *t, node_t *p) {
 
   l->left = p;
   p->parent = l;
-
-  return 0;
 }
 
-int rbtree_insert_fixup(rbtree *t, node_t *p) {
+void rbtree_insert_fixup(rbtree *t, node_t *p) {
   while (p->parent->color == RBTREE_RED) {
     // 왼쪽 서브트리
     if (p->parent == p->parent->parent->left) {
@@ -138,7 +141,6 @@ int rbtree_insert_fixup(rbtree *t, node_t *p) {
   }
 
   t->root->color = RBTREE_BLACK;
-  return 0;
 }
 
 node_t *rbtree_insert(rbtree *t, const key_t key) {
