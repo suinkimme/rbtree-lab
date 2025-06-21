@@ -1,5 +1,5 @@
 #include "rbtree.h"
-
+#include <stdio.h>
 #include <stdlib.h>
 
 /* level: 1 */
@@ -45,6 +45,100 @@ rbtree *new_rbtree(void) {
 void delete_rbtree(rbtree *t) {
   // TODO: reclaim the tree nodes's memory
   free(t);
+}
+
+int rotate_right(rbtree *t, node_t *p) {
+  node_t *l = p->left;
+  p->left = l->right;
+  if (l->right != t->nil) {
+    l->right->parent = p;
+  }
+  l->parent = p->parent;
+
+  if (p->parent == t->nil) {
+    t->root = l;
+  } else if (p == p->parent->right) {
+    p->parent->right = l;
+  } else {
+    p->parent->left = l;
+  }
+
+  l->right = p;
+  p->parent = l;
+
+  return 0;
+}
+
+int rotate_left(rbtree *t, node_t *p) {
+  node_t *l = p->right;
+  p->right = l->left;
+  if (l->left != t->nil) {
+    l->left->parent = p;
+  }
+  l->parent = p->parent;
+
+  if (p->parent == t->nil) {
+    t->root = l;
+  } else if (p == p->parent->left) {
+    p->parent->left = l;
+  } else {
+    p->parent->right = l;
+  }
+
+  l->left = p;
+  p->parent = l;
+
+  return 0;
+}
+
+int rbtree_insert_fixup(rbtree *t, node_t *p) {
+  while (p->parent->color == RBTREE_RED) {
+    // 왼쪽 서브트리
+    if (p->parent == p->parent->parent->left) {
+      node_t *uncle = p->parent->parent->right;
+
+      if (uncle->color == RBTREE_RED) {
+        p->parent->color = RBTREE_BLACK;
+        uncle->color = RBTREE_BLACK;
+        p->parent->parent->color = RBTREE_RED;
+        p = p->parent->parent;
+      } else {
+        // 꺽인 상태인지 확인
+        // 할아버지와 부모가 왼쪽으로 일직선이니까 자신이 부모의 오른쪽에 위치해 있으면 꺽인거라 할 수 있음
+        if (p == p->parent->right) {
+          p = p->parent;
+          rotate_left(t, p);
+        }
+
+        p->parent->color = RBTREE_BLACK;
+        p->parent->parent->color = RBTREE_RED;
+        rotate_right(t, p->parent->parent);
+      }
+
+    // 오른쪽 서브트리
+    } else {
+      node_t *uncle = p->parent->parent->left;
+
+      if (uncle->color == RBTREE_RED) {
+        p->parent->color = RBTREE_BLACK;
+        uncle->color = RBTREE_BLACK;
+        p->parent->parent->color = RBTREE_RED;
+        p = p->parent->parent;
+      } else {
+        if (p == p->parent->left) {
+          p = p->parent;
+          rotate_right(t, p);
+        }
+
+        p->parent->color = RBTREE_BLACK;
+        p->parent->parent->color = RBTREE_RED;
+        rotate_left(t, p->parent->parent);
+      }
+    }
+  }
+
+  t->root->color = RBTREE_BLACK;
+  return 0;
 }
 
 node_t *rbtree_insert(rbtree *t, const key_t key) {
@@ -93,6 +187,8 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
   } else {
     parent->right = new_node;
   }
+
+  rbtree_insert_fixup(t, new_node);
 
   return new_node;
 }

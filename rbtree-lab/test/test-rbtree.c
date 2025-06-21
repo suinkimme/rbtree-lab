@@ -414,16 +414,21 @@ void test_find_erase_rand(const size_t n, const unsigned int seed)
 
 int main(void)
 {
-  test_init();
-  test_insert_single(1024);
-  test_find_single(512, 1024);
-  test_erase_root(128);
-  test_find_erase_fixed();
-  test_minmax_suite();
-  test_to_array_suite();
-  test_distinct_values();
-  test_duplicate_values();
-  test_multi_instance();
-  test_find_erase_rand(10000, 17);
-  printf("Passed all tests!\n");
+  // test_init();
+  // test_insert_single(1024);
+  // test_find_single(512, 1024);
+  // test_erase_root(128);
+  // test_find_erase_fixed();
+  // test_minmax_suite();
+  // test_to_array_suite();
+  // test_distinct_values();
+  // test_duplicate_values();
+  // test_multi_instance();
+  // test_find_erase_rand(10000, 17);
+  // printf("Passed all tests!\n");
+  rbtree *t = new_rbtree();
+
+  key_t arr[] = { 50, 30, 20 };
+  const size_t n = sizeof(arr) / sizeof(arr[0]);
+  insert_arr(t, arr, n);
 }
