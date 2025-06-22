@@ -235,32 +235,51 @@ node_t *rbtree_max(const rbtree *t) {
 /* ----------------------------------------------------------------- */
 
 void rbtree_erase_fixup(rbtree *t, node_t *p) {
+  // p가 루트가 아니고 double black 상태일 때까지 반복
+  // double을 직접 나타내지는 않고 논리적으로만 나타냄
+  // 블랙 노드가 삭제되면 실제 블랙 높이가 줄어들게 됨
   while (p != t->root && p->color == RBTREE_BLACK) {
+    // p가 왼쪽 서브트리일 때
     if (p == p->parent->left) {
+      // 케이스 1
       node_t *brother = p->parent->right;
-
+      // 형제가 레드면 형제와 부모 색을 바구고 부모를 기준으로 왼쪽으로 회전
+      // 이유: 형제를 검정색으로 만들어 케이스 2/3/4 로 진입 가능하도록 유도
       if (brother->color == RBTREE_RED) {
         brother->color = RBTREE_BLACK;
         p->parent->color = RBTREE_RED;
         rotate_left(t, p->parent);
+        // 회전 후 형제 노드가 바뀌었기 때문에 다시 갱신
         brother = p->parent->right;
       }
 
+      // 케이스 2
+      // 형제와 형제 자식들이 모두 블랙이면
+      // 형제를 레드로 바꿔 블랙을 부모로 올림
       if (brother->left->color == RBTREE_BLACK && brother->right->color == RBTREE_BLACK) {
         brother->color = RBTREE_RED;
+        // p는 부모로 올라가서 fixup을 다시 반복
         p = p->parent;
       } else {
+        // 케이스 3
+        // 형제는 블랙이고 안쪽 자식이 레드일 경우 (꺽인거)
         if (brother->color == RBTREE_BLACK && brother->left->color == RBTREE_RED) {
+          // 형제와 자식 색을 바꾸고 형제를 기준으로 오른쪽 회전
           brother->color = RBTREE_RED;
           brother->left->color = RBTREE_BLACK;
           rotate_right(t, brother);
           brother = p->parent->right;
         }
 
+        // 케이스 4
+        // 형제가 블랙이고 오른쪽 자식이 레드 (일직선)
+        // 부모와 형제 색을 바꾸고, 형제 자식을 블랙으로 바꾸고 회전
         brother->color = p->parent->color;
         p->parent->color = RBTREE_BLACK;
         brother->right->color = RBTREE_BLACK;
         rotate_left(t, p->parent);
+
+        // p를 루트로 설정하여 루프를 종료
         p = t->root;
       }
     } else {
